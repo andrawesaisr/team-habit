@@ -7,7 +7,9 @@
     "start": "bun run index.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@better-auth/cli": "^1.4.3",
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.31.7"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -15,7 +17,9 @@
   "dependencies": {
     "@hono/zod-validator": "^0.7.5",
     "better-auth": "^1.4.3",
+    "drizzle-orm": "^0.44.7",
     "hono": "^4.10.7",
+    "postgres": "^3.4.7",
     "zod": "^4.1.13"
   }
 }

@@ -1,6 +1,9 @@
 import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import type { BetterAuthOptions } from "better-auth";
 import { env } from "./env";
+import { db } from "../lib/db/client";
+import * as schema from "../lib/db/schema";
 
 const authOptions: BetterAuthOptions = {
     basePath: "/auth",
@@ -21,7 +24,11 @@ const authOptions: BetterAuthOptions = {
     },
     logger: {
         level: env.NODE_ENV === "production" ? "error" : "debug"
-    }
+    },
+    database: drizzleAdapter(db, {
+        schema,
+        provider: "pg"
+    })
 };
 
 export const auth = betterAuth(authOptions);

@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "bun run index.ts"
+    "start": "bun run --watch index.ts"
   },
   "devDependencies": {
     "@better-auth/cli": "^1.4.3",
@@ -19,6 +19,7 @@
     "better-auth": "^1.4.3",
     "drizzle-orm": "^0.44.7",
     "hono": "^4.10.7",
+    "nanoid": "^5.1.6",
     "postgres": "^3.4.7",
     "zod": "^4.1.13"
   }

@@ -34,6 +34,9 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({ user, isLoading }) => {
                         <span className="text-muted-foreground">Loading…</span>
                     ) : user ? (
                         <>
+                            <Link to="/workspaces" className="transition-colors hover:text-primary">
+                                Workspaces
+                            </Link>
                             <span className="hidden text-sm text-muted-foreground sm:inline">
                                 {user.name ?? user.email}
                             </span>

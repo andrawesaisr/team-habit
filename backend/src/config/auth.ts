@@ -1,6 +1,5 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import type { BetterAuthOptions } from "better-auth";
 import { env } from "./env";
 import { db } from "../lib/db/client";
 import * as schema from "../lib/db/schema";

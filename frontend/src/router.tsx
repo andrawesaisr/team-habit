@@ -10,6 +10,8 @@ import { HomePage } from "@/routes/home";
 import { LoginPage } from "@/routes/login";
 import { RegisterPage } from "@/routes/register";
 import { NotFoundPage } from "@/routes/not-found";
+import { Workspaces } from "@/routes/workspaces";
+import { WorkspacePage } from "@/routes/workspace";
 import { ensureSession } from "@/features/auth/query";
 
 export type RouterContext = {
@@ -65,13 +67,45 @@ const registerRoute = createRoute({
     component: RegisterPage
 });
 
+const workspacesRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/workspaces",
+    beforeLoad: async ({ context }) => {
+        const session = await ensureSession(context.queryClient);
+        if (!session.user) {
+            throw redirect({ to: "/login" });
+        }
+    },
+    component: Workspaces
+});
+
+const workspaceRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/workspaces/$workspaceId",
+    beforeLoad: async ({ context }) => {
+        const session = await ensureSession(context.queryClient);
+        if (!session.user) {
+            throw redirect({ to: "/login" });
+        }
+    },
+    component: WorkspacePage
+});
+
 const notFoundRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: "*",
     component: NotFoundPage
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute, registerRoute, notFoundRoute]);
+
+const routeTree = rootRoute.addChildren([
+    indexRoute,
+    loginRoute,
+    registerRoute,
+    workspacesRoute,
+    workspaceRoute,
+    notFoundRoute
+]);
 
 export const router = createRouter({
     routeTree,

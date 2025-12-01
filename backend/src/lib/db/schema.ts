@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, pgEnum } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -73,9 +73,30 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const workspace = pgTable("workspace", {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    description: text("description"),
+    createdBy: text("created_by").notNull().references(() => user.id),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
+});
+
+export const roleEnum = pgEnum('role', ['admin', 'member']);
+
+export const workspaceMember = pgTable("workspace_member", {
+    id: text("id").primaryKey(),
+    workspaceId: text("workspace_id").notNull().references(() => workspace.id, { onDelete: "cascade" }),
+    userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+    role: roleEnum("role").default("member").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()).notNull(),
+});
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  workspaceMembers: many(workspaceMember),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -90,4 +111,23 @@ export const accountRelations = relations(account, ({ one }) => ({
     fields: [account.userId],
     references: [user.id],
   }),
+}));
+
+export const workspaceRelations = relations(workspace, ({ one, many }) => ({
+    user: one(user, {
+        fields: [workspace.createdBy],
+        references: [user.id],
+    }),
+    members: many(workspaceMember),
+}));
+
+export const workspaceMemberRelations = relations(workspaceMember, ({ one }) => ({
+    workspace: one(workspace, {
+        fields: [workspaceMember.workspaceId],
+        references: [workspace.id],
+    }),
+    user: one(user, {
+        fields: [workspaceMember.userId],
+        references: [user.id],
+    }),
 }));
